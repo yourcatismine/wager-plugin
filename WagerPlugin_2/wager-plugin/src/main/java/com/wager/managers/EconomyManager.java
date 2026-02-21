@@ -28,7 +28,7 @@ public class EconomyManager {
 
     public boolean setupEconomy() {
         // Try Vault first
-        if (plugin.getServer().getPluginManager().getPlugin("Vault") != null) {
+        if (plugin.getServer().getPluginManager().getPlugin("Vault") != null) { //
             RegisteredServiceProvider<Economy> rsp = plugin.getServer().getServicesManager()
                     .getRegistration(Economy.class);
             if (rsp != null && rsp.getProvider() != null) {
