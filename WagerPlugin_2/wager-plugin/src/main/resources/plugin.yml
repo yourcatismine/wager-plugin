@@ -1,0 +1,28 @@
+name: WagerPlugin
+version: 1.0.0
+main: com.wager.WagerPlugin
+api-version: '1.21'
+folia-supported: true
+description: Wager system with arenas and GUIs
+softdepend: [Vault, WorldEdit]
+
+commands:
+  wager:
+    description: Open the wager menu
+    usage: /wager
+    permission: wager.use
+  arena:
+    description: Arena management commands
+    usage: /arena <subcommand>
+    permission: wager.admin
+  leave:
+    description: Leave a wager and return to lobby
+    usage: /leave
+
+permissions:
+  wager.use:
+    description: Allows use of the wager system
+    default: true
+  wager.admin:
+    description: Allows arena management
+    default: op

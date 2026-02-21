@@ -1,0 +1,39 @@
+# WagerPlugin Configuration
+# Tax percentage taken from winnings (3% default)
+tax-percent: 3.0
+
+# Starting balance for new players when using the built-in economy (no Vault/EssentialsX needed)
+starting-balance: 10000.0
+
+# Minimum and maximum wager amounts
+min-wager: 100
+max-wager: 1000000
+
+# Countdown seconds before wager fight starts
+countdown-seconds: 5
+
+# Arena world name
+arena-world: "wager_arenas"
+
+# Lobby location (set in-game with /arena setlobby)
+lobby:
+  world: "world"
+  x: 0.0
+  y: 64.0
+  z: 0.0
+  yaw: 0.0
+  pitch: 0.0
+
+# Schematics folder (place .schem files here)
+# Located at plugins/WagerPlugin/schematics/
+schematics-folder: "schematics"
+
+# Preset wager amounts shown in GUI
+preset-amounts:
+  - 100
+  - 500
+  - 1000
+  - 5000
+  - 10000
+  - 50000
+  - 100000

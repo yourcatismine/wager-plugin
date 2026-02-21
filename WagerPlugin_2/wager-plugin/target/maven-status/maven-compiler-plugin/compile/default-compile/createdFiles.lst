@@ -1,0 +1,17 @@
+com\wager\commands\ArenaCommand.class
+com\wager\commands\LeaveCommand.class
+com\wager\managers\Wager.class
+com\wager\utils\SchedulerUtil.class
+com\wager\managers\EconomyManager.class
+com\wager\commands\WagerCommand.class
+com\wager\managers\WagerManager.class
+com\wager\arena\ArenaManager.class
+com\wager\commands\LeaveCommand$1.class
+com\wager\listeners\GUIListener.class
+com\wager\gui\GUIManager.class
+com\wager\managers\Wager$WagerState.class
+com\wager\listeners\PlayerListener.class
+com\wager\arena\Arena.class
+com\wager\WagerPlugin.class
+com\wager\utils\FormatUtil.class
+com\wager\utils\SchedulerUtil$1.class
