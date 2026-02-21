@@ -4,7 +4,7 @@ main: com.wager.WagerPlugin
 api-version: '1.21'
 folia-supported: true
 description: Wager system with arenas and GUIs
-softdepend: [Vault, WorldEdit]
+softdepend: [Vault, WorldEdit, PrismCore]
 
 commands:
   wager:

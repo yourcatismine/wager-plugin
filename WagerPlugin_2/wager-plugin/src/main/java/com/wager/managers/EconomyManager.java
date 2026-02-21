@@ -29,20 +29,26 @@ public class EconomyManager {
     public boolean setupEconomy() {
         // Try Vault first
         if (plugin.getServer().getPluginManager().getPlugin("Vault") != null) {
-            RegisteredServiceProvider<Economy> rsp =
-                    plugin.getServer().getServicesManager().getRegistration(Economy.class);
+            RegisteredServiceProvider<Economy> rsp = plugin.getServer().getServicesManager()
+                    .getRegistration(Economy.class);
             if (rsp != null && rsp.getProvider() != null) {
                 vaultEconomy = rsp.getProvider();
                 usingVault = true;
-                plugin.getLogger().info("Using Vault economy: " + vaultEconomy.getName());
+                plugin.getLogger().info("Successfully hooked into Vault economy: " + vaultEconomy.getName());
+
+                if (vaultEconomy.getName().equalsIgnoreCase("PrismEconomy")) {
+                    //
+                }
                 return true;
             }
-            plugin.getLogger().warning("Vault found but no economy provider — falling back to built-in economy.");
+            plugin.getLogger().warning(
+                    "Vault found but no economy provider found yet.");
         } else {
-            plugin.getLogger().warning("Vault not found — falling back to built-in economy.");
+            plugin.getLogger()
+                    .warning("Vault not found. Wager system will use the built-in local economy");
         }
 
-        // Built-in economy
+        // Built-in economy fallback
         setupBuiltInEconomy();
         plugin.getLogger().info("Built-in economy enabled. Players start with $"
                 + plugin.getConfig().getDouble("starting-balance", 10000.0));

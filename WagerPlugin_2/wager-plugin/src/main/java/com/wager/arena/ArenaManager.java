@@ -57,23 +57,30 @@ public class ArenaManager {
         // Create arena world if it doesn't exist
         String worldName = plugin.getConfig().getString("arena-world", "wager_arenas");
         if (Bukkit.getWorld(worldName) == null) {
-            plugin.getLogger().info("Creating arena world: " + worldName);
-            WorldCreator creator = new WorldCreator(worldName);
-            try {
-                creator.type(org.bukkit.WorldType.FLAT);
-            } catch (NoClassDefFoundError ignored) {
-                // WorldType removed in this server version - world will use default type
-            }
-            creator.generateStructures(false);
-            World world = creator.createWorld();
-            if (world != null) {
-                world.setAutoSave(false);
-                world.setDifficulty(org.bukkit.Difficulty.NORMAL);
-                world.setGameRule(org.bukkit.GameRule.DO_DAYLIGHT_CYCLE, false);
-                world.setGameRule(org.bukkit.GameRule.DO_WEATHER_CYCLE, false);
-                world.setGameRule(org.bukkit.GameRule.DO_MOB_SPAWNING, false);
-                world.setGameRule(org.bukkit.GameRule.KEEP_INVENTORY, true);
-                world.setTime(6000);
+            if (com.wager.utils.SchedulerUtil.isFolia()) {
+                plugin.getLogger().warning("!!! FOLIA DETECTED !!!");
+                plugin.getLogger().warning("Folia does not support dynamic world creation.");
+                plugin.getLogger().warning("Please manually create or load the world: " + worldName);
+                plugin.getLogger().warning("Arenas using this world will not work until the world is loaded.");
+            } else {
+                plugin.getLogger().info("Creating arena world: " + worldName);
+                WorldCreator creator = new WorldCreator(worldName);
+                try {
+                    creator.type(org.bukkit.WorldType.FLAT);
+                } catch (NoClassDefFoundError ignored) {
+                    // WorldType removed in this server version - world will use default type
+                }
+                creator.generateStructures(false);
+                World world = creator.createWorld();
+                if (world != null) {
+                    world.setAutoSave(false);
+                    world.setDifficulty(org.bukkit.Difficulty.NORMAL);
+                    world.setGameRule(org.bukkit.GameRule.DO_DAYLIGHT_CYCLE, false);
+                    world.setGameRule(org.bukkit.GameRule.DO_WEATHER_CYCLE, false);
+                    world.setGameRule(org.bukkit.GameRule.DO_MOB_SPAWNING, false);
+                    world.setGameRule(org.bukkit.GameRule.KEEP_INVENTORY, true);
+                    world.setTime(6000);
+                }
             }
         }
 
@@ -93,9 +100,9 @@ public class ArenaManager {
             return;
         }
 
-        File[] files = schemDir.listFiles((dir, name) ->
-                name.endsWith(".schem") || name.endsWith(".schematic"));
-        if (files == null) return;
+        File[] files = schemDir.listFiles((dir, name) -> name.endsWith(".schem") || name.endsWith(".schematic"));
+        if (files == null)
+            return;
 
         for (File file : files) {
             String name = file.getName().replace(".schem", "").replace(".schematic", "");
@@ -103,7 +110,8 @@ public class ArenaManager {
                 Arena arena = new Arena(name);
                 arena.setSchematicName(file.getName());
                 arenas.put(name, arena);
-                plugin.getLogger().info("Found new schematic: " + file.getName() + " - Arena '" + name + "' created. Set spawns with /arena setspawn <1|2> " + name);
+                plugin.getLogger().info("Found new schematic: " + file.getName() + " - Arena '" + name
+                        + "' created. Set spawns with /arena setspawn <1|2> " + name);
 
                 // Try to paste schematic using WorldEdit
                 pasteSchematic(file, name);
@@ -123,7 +131,8 @@ public class ArenaManager {
 
             String worldName = plugin.getConfig().getString("arena-world", "wager_arenas");
             World world = Bukkit.getWorld(worldName);
-            if (world == null) return;
+            if (world == null)
+                return;
 
             // Calculate offset position for each arena (space them 200 blocks apart)
             int arenaIndex = new ArrayList<>(arenas.keySet()).indexOf(arenaName);
@@ -132,33 +141,33 @@ public class ArenaManager {
             SchedulerUtil.runTaskAsync(plugin, () -> {
                 try {
                     com.sk89q.worldedit.extent.clipboard.Clipboard clipboard;
-                    com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat format =
-                            com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats.findByFile(schematicFile);
+                    com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat format = com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats
+                            .findByFile(schematicFile);
                     if (format == null) {
                         plugin.getLogger().warning("Unknown schematic format: " + schematicFile.getName());
                         return;
                     }
 
-                    try (com.sk89q.worldedit.extent.clipboard.io.ClipboardReader reader =
-                             format.getReader(new java.io.FileInputStream(schematicFile))) {
+                    try (com.sk89q.worldedit.extent.clipboard.io.ClipboardReader reader = format
+                            .getReader(new java.io.FileInputStream(schematicFile))) {
                         clipboard = reader.read();
                     }
 
-                    com.sk89q.worldedit.world.World weWorld =
-                            com.sk89q.worldedit.bukkit.BukkitAdapter.adapt(world);
+                    com.sk89q.worldedit.world.World weWorld = com.sk89q.worldedit.bukkit.BukkitAdapter.adapt(world);
 
-                    try (com.sk89q.worldedit.EditSession editSession =
-                             com.sk89q.worldedit.WorldEdit.getInstance().newEditSession(weWorld)) {
-                        com.sk89q.worldedit.function.operation.Operation operation =
-                                new com.sk89q.worldedit.session.ClipboardHolder(clipboard)
-                                        .createPaste(editSession)
-                                        .to(com.sk89q.worldedit.math.BlockVector3.at(xOffset, 64, 0))
-                                        .ignoreAirBlocks(false)
-                                        .build();
+                    try (com.sk89q.worldedit.EditSession editSession = com.sk89q.worldedit.WorldEdit.getInstance()
+                            .newEditSession(weWorld)) {
+                        com.sk89q.worldedit.function.operation.Operation operation = new com.sk89q.worldedit.session.ClipboardHolder(
+                                clipboard)
+                                .createPaste(editSession)
+                                .to(com.sk89q.worldedit.math.BlockVector3.at(xOffset, 64, 0))
+                                .ignoreAirBlocks(false)
+                                .build();
                         com.sk89q.worldedit.function.operation.Operations.complete(operation);
                     }
 
-                    plugin.getLogger().info("Pasted schematic '" + schematicFile.getName() + "' at " + xOffset + ", 64, 0 in " + worldName);
+                    plugin.getLogger().info("Pasted schematic '" + schematicFile.getName() + "' at " + xOffset
+                            + ", 64, 0 in " + worldName);
                 } catch (Exception e) {
                     plugin.getLogger().warning("Failed to paste schematic: " + e.getMessage());
                 }
